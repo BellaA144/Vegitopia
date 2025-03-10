@@ -215,15 +215,27 @@ export default function DataTableRowSelection<T extends { id?: string | undefine
             />
           )}
 
-          {selectedCount === 1 && (
-            <Button variant='tonal' onClick={() => setOpen(true)}>
-              Add To Cart
+          {selectedCount === 0 && (
+            <Button variant='tonal' color='secondary' onClick={handleExportToCSV}>
+              Export to CSV
             </Button>
           )}
 
-          {selectedCount > 1 && (
+          {selectedCount === 0 && (
             <Button variant='tonal' onClick={() => setOpen(true)}>
-              Add To Cart
+              Add New
+            </Button>
+          )}
+
+          {selectedCount === 1 && (
+            <Button variant='tonal' color='info' onClick={handleEdit}>
+              Edit Data
+            </Button>
+          )}
+
+          {selectedCount > 0 && (
+            <Button variant='tonal' color='error' onClick={handleClickDelete}>
+              Delete Data
             </Button>
           )}
         </div>

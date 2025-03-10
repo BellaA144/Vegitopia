@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
+import Hero from '@/components/Hero'
+import { getProducts } from './actions'
+import Products from './components/Products'
 
 export default async function Page() {
   const supabase = await createClient()
@@ -11,5 +14,12 @@ export default async function Page() {
     redirect('/login')
   }
 
-  return <h1>Home page!</h1>
+  const products = await getProducts()
+
+  return (
+    <div className='overflow-hidden'>
+      <Hero />
+      <Products initialData={products || []} />
+    </div>
+  )
 }
