@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 import { Box, Typography, Button, IconButton, CircularProgress, TextField, Snackbar } from '@mui/material'
 
-import { Add, Remove, Delete } from '@mui/icons-material'
+import { Add, Remove, Delete } from '@mui/icons-material';
 
 import { createClient } from '@/utils/supabase/client'
 
