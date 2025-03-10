@@ -13,7 +13,7 @@ const FooterContent = () => {
     >
       <p>
         <span className='text-textSecondary'>{`© ${new Date().getFullYear()} `}</span>
-        <span className='text-textSecondary'>Kalbe Devstream UI</span>
+        <span className='text-textSecondary'>Vegitopia</span>
       </p>
     </div>
   )

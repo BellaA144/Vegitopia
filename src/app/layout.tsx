@@ -17,8 +17,8 @@ import '@/app/globals.css'
 import '@assets/iconify-icons/generated-icons.css'
 
 export const metadata = {
-  title: 'Kalbe Devstream UI Template',
-  description: 'Kalbe Devstream UI Template'
+  title: 'Vegitopia',
+  description: 'Vegitopia'
 }
 
 const RootLayout = async (props: ChildrenType) => {
