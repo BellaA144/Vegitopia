@@ -5,4 +5,5 @@ export interface ProductType {
   type: string
   price: number
   stock: number
+  category?: string
 }

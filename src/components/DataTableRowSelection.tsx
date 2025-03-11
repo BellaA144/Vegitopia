@@ -67,27 +67,32 @@ interface DataTableRowSelectionProps<T> {
   dynamicColumns: ColumnDef<T, any>[]
   onSelectedRowsChange?: (rows: T[]) => void
   setOpen: (open: boolean) => void
-  onDeleteProduct?: (rows: T[]) => Promise<void>
-  onEditProduct?: (row: T) => void
-  onExportToCSV?: (rows: T[], filename: string) => void
 }
 
-export default function DataTableRowSelection<T extends { id?: string | undefined | null }>({
+export default function DataTableRowSelection<T extends { id?: string | undefined | null; category?: string }>({
   data,
   tableName,
   dynamicColumns,
   onSelectedRowsChange,
-  onDeleteProduct,
-  setOpen,
-  onEditProduct,
-  onExportToCSV
+  setOpen
 }: DataTableRowSelectionProps<T>) {
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
   const [searchTerm, setSearchTerm] = useState('')
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [sorting, setSorting] = useState<SortingState>([])
+  const [categoryFilter, setCategoryFilter] = useState('All Categories')
 
   const selectedCount = Object.keys(rowSelection).length
+
+  const categories = useMemo(() => {
+    console.log('Raw data:', data) // Debugging
+    const uniqueCategories = Array.from(new Set(data.map(item => item.category).filter(cat => !!cat)))
+    console.log('Extracted categories:', uniqueCategories) // Debugging
+    return ['All Categories', ...uniqueCategories]
+  }, [data])
+
+  const filteredData = useMemo(() => {
+    return categoryFilter === 'All Categories' ? data : data.filter(item => item.category === categoryFilter)
+  }, [data, categoryFilter])
 
   const sortableDynamicColumns = useMemo(
     () =>
@@ -131,7 +136,7 @@ export default function DataTableRowSelection<T extends { id?: string | undefine
   )
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns: modifiedColumns,
     getRowId: row => String(row.id),
     state: {
@@ -158,32 +163,6 @@ export default function DataTableRowSelection<T extends { id?: string | undefine
   const currentPageRows = table.getRowModel().rows
   const filteredCount = table.getFilteredRowModel().rows.length
 
-  const handleClickDelete = () => setDeleteDialogOpen(true)
-  const handleCancelDelete = () => setDeleteDialogOpen(false)
-
-  const handleConfirmDelete = async () => {
-    setDeleteDialogOpen(false)
-    if (!onDeleteProduct) return
-    const selectedData = table.getSelectedRowModel().flatRows.map(row => row.original)
-
-    await onDeleteProduct(selectedData)
-  }
-
-  const handleEdit = () => {
-    if (!onEditProduct) return
-    const selectedData = table.getSelectedRowModel().flatRows.map(row => row.original)
-
-    if (selectedData.length === 1) {
-      onEditProduct(selectedData[0])
-    }
-  }
-
-  const handleExportToCSV = () => {
-    if (!onExportToCSV) return
-
-    onExportToCSV(data, tableName)
-  }
-
   return (
     <Card>
       <CardHeader title={tableName} />
@@ -204,24 +183,28 @@ export default function DataTableRowSelection<T extends { id?: string | undefine
             </MenuItem>
           ))}
         </CustomTextField>
+
         <div className='flex flex-col sm:flex-row max-sm:is-full items-start sm:items-center gap-4'>
           {/* Show if 0 selected */}
           {selectedCount === 0 && (
-            <DebouncedInput
-              value={searchTerm}
-              className='max-sm:is-full min-is-[250px]'
-              onChange={value => setSearchTerm(String(value))}
-              placeholder='Type to search data...'
-            />
+            <>
+              <DebouncedInput
+                value={searchTerm}
+                className='max-sm:is-full min-is-[250px]'
+                onChange={value => setSearchTerm(String(value))}
+                placeholder='Type to search data...'
+              />
+              <CustomTextField select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
+                {categories.map(category => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </>
           )}
 
-          {selectedCount === 1 && (
-            <Button variant='tonal' onClick={() => setOpen(true)}>
-              Add To Cart
-            </Button>
-          )}
-
-          {selectedCount > 1 && (
+          {selectedCount >= 1 && (
             <Button variant='tonal' onClick={() => setOpen(true)}>
               Add To Cart
             </Button>
@@ -282,14 +265,6 @@ export default function DataTableRowSelection<T extends { id?: string | undefine
           table.setPageSize(Number(e.target.value))
           table.setPageIndex(0)
         }}
-      />
-      <ConfirmationDialog
-        open={deleteDialogOpen}
-        onClose={handleCancelDelete}
-        title='Delete Confirmation'
-        description='Are you sure you want to delete the selected rows?'
-        confirmLabel='Delete'
-        onConfirm={handleConfirmDelete}
       />
     </Card>
   )
