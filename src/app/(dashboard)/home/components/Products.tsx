@@ -28,6 +28,7 @@ export default function Products({ initialData }: ProductsProps) {
   useEffect(() => {
     async function fetchProducts() {
       const updatedProducts = await getProducts()
+      console.log("Fetched products:", updatedProducts)
       setProducts(updatedProducts)
     }
 
@@ -45,6 +46,8 @@ export default function Products({ initialData }: ProductsProps) {
       stock: product.stock,
       total_price: 0
     }))
+
+    console.log("Cart items:", cartItems)
 
     startTransition(async () => {
       const addPromises = cartItems.map(async cartItem => {
