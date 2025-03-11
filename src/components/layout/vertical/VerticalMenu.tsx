@@ -71,10 +71,13 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         <MenuItem href='/home' icon={<i className='tabler-smart-home' />}>
           Home
         </MenuItem>
-        <MenuItem href='/master/carts' icon={<i className='tabler-info-circle' />}>
+        <MenuItem href='/master/carts' icon={<i className='tabler-shopping-cart' />}>
           Cart
         </MenuItem>
-        <MenuItem href='/master/table-example' icon={<i className='tabler-info-circle' />}>
+        <MenuItem href='/master/history' icon={<i className='tabler-history' />}>
+          History
+        </MenuItem>
+        {/* <MenuItem href='/master/table-example' icon={<i className='tabler-info-circle' />}>
           Table Example
         </MenuItem>
         <MenuItem href='/master/orders' icon={<i className='tabler-receipt' />}>
@@ -82,7 +85,7 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         </MenuItem>
         <MenuItem href='/master/phones' icon={<i className='tabler-device-mobile' />}>
           Phones
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}
