@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { Box, Button, IconButton, Snackbar, TextField, Typography, CircularProgress } from "@mui/material";
 import { Add, Remove, Delete } from "@mui/icons-material";
+import { showPromiseToast } from '@/utils/toastUtility'
 
 type CartsProps = {
   initialData: CartType[];
@@ -48,23 +49,27 @@ export default function Carts({ initialData }: CartsProps) {
 
         const unitPrice = (item.total_price || 0) / item.quantity; // Hitung harga per unit
 
-        console.log(`🔄 Updating cart ${cart_id} with quantity ${newQuantity}`);
+        await showPromiseToast(
+          async () => {
+            const { error } = await supabase
+              .from("carts")
+              .update({ quantity: newQuantity, total_price: newQuantity * unitPrice })
+              .eq("cart_id", cart_id);
 
-        const { error } = await supabase
-          .from("carts")
-          .update({ quantity: newQuantity, total_price: newQuantity * unitPrice })
-          .eq("cart_id", cart_id);
-
-        if (error) throw new Error(error.message);
-
-        console.log("✅ Cart updated successfully");
+            if (error) throw new Error(error.message);
+          },
+          {
+            pending: "Updating cart...",
+            success: "Cart updated successfully!",
+            error: "Failed to update cart",
+          }
+        );
 
         setCart((prevCart) =>
           prevCart.map((i) =>
             i.cart_id === cart_id ? { ...i, quantity: newQuantity, total_price: newQuantity * unitPrice } : i
           )
         );
-        setSuccessMessage("Cart updated successfully!");
       } catch (error) {
         console.error("❌ Update Quantity Error:", error);
       }
@@ -75,16 +80,20 @@ export default function Carts({ initialData }: CartsProps) {
     startTransition(async () => {
       try {
         const supabase = createClient();
-        console.log(`🗑 Removing item ${cart_id}`);
 
-        const { error } = await supabase.from("carts").delete().eq("cart_id", cart_id);
-
-        if (error) throw new Error(error.message);
-
-        console.log("✅ Item removed successfully");
+        await showPromiseToast(
+          async () => {
+            const { error } = await supabase.from("carts").delete().eq("cart_id", cart_id);
+            if (error) throw new Error(error.message);
+          },
+          {
+            pending: "Removing item...",
+            success: "Item removed successfully!",
+            error: "Failed to remove item",
+          }
+        );
 
         setCart((prevCart) => prevCart.filter((item) => item.cart_id !== cart_id));
-        setSuccessMessage("Item removed successfully!");
       } catch (error) {
         console.error("❌ Remove Item Error:", error);
       }
@@ -96,26 +105,30 @@ export default function Carts({ initialData }: CartsProps) {
   const handleCheckout = async () => {
     try {
       setLoading(true);
-      console.log("🛒 Checkout button clicked!");
 
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cart }),
-      });
+      await showPromiseToast(
+        async () => {
+          const response = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart }),
+          });
 
-      console.log("🔄 Response received!", response);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: "Invalid response from server" }));
+            throw new Error(errorData.message || "Checkout failed");
+          }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: "Invalid response from server" }));
-        throw new Error(errorData.message || "Checkout failed");
-      }
-
-      const responseData = await response.json();
-      console.log("✅ Checkout success!", responseData);
+          return response.json();
+        },
+        {
+          pending: "Processing checkout...",
+          success: "Checkout successful!",
+          error: "Checkout failed",
+        }
+      );
 
       router.refresh();
-      setSuccessMessage("Checkout success!");
     } catch (error) {
       console.error("❌ Checkout Error:", error);
     } finally {

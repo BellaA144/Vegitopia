@@ -77,3 +77,18 @@ export async function addToCart(cart: CartType): Promise<CartType | null> {
     throw new Error(error.message)
   }
 }
+
+export const fetchCategory = async () => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('category')
+
+  if (error) {
+    console.error('Error fetching categories:', error)
+    return []
+  }
+
+  // Ambil kategori unik & hapus nilai null/undefined
+  return Array.from(new Set(data.map(item => item.category))).filter(Boolean)
+}
