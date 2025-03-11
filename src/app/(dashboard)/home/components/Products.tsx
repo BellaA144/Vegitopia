@@ -12,7 +12,6 @@ import UpsertProduct from './UpsertProduct'
 import DataTableRowSelection from '@/components/DataTableRowSelection'
 
 import { showPromiseToast } from '@/utils/toastUtility'
-import handleExportToCSV from '@/utils/exportToCSV'
 import { addToCart, getProducts } from '../actions'
 
 type ProductsProps = {
@@ -86,7 +85,6 @@ export default function Products({ initialData }: ProductsProps) {
           tableName='Vegitopia Catalog'
           setOpen={() => setOpen(true)}
           onSelectedRowsChange={setSelectedRows}
-          onExportToCSV={() => handleExportToCSV(products, 'Products')}
         />
       )}
       <UpsertProduct open={open} setOpen={setOpen} onAddProduct={handleAddToCart} selectedRows={selectedRows} />

@@ -18,7 +18,7 @@ export async function getProducts(): Promise<ProductType[]> {
 
     const cartProductIds = cartItems.map(item => item.product_id)
 
-    let query = supabase.from('products').select('id, name, description, price, type, stock')
+    let query = supabase.from('products').select('id, name, description, price, type, stock, category')
 
     if (cartProductIds.length > 0) {
       query = query.not('id', 'in', `(${cartProductIds.join(',')})`)
