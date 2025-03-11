@@ -30,11 +30,6 @@ body {
   background-color: var(--background-color);
 }
 
-.navbar, .card, .button {
-  background-color: var(--component-color);
-  color: white; /* Opsional: agar teks tetap terlihat jelas di dark mode */
-}
-
 *,
 ::before,
 ::after {

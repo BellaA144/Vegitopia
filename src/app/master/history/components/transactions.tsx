@@ -9,6 +9,7 @@ import type { TransactionsType } from '../types'
 import columns from '../columns'
 import DataTableRowSelectionHistory from '@/components/DataTableRowSelectionHistory'
 import { deleteAllTransactions } from '../actions'
+import { showPromiseToast } from '@/utils/toastUtility'
 
 type ProductsProps = {
   initialData: TransactionsType[]
@@ -19,12 +20,20 @@ export default function Transactions({ initialData }: ProductsProps) {
   const [isPending, startTransition] = useTransition()
 
   const handleDeleteAll = async () => {
-    const result = await deleteAllTransactions()
+    await showPromiseToast(
+      async () => {
+        const result = await deleteAllTransactions();
+        if (!result) throw new Error("Failed to delete transactions");
+        setTransaction([]);
+      },
+      {
+        pending: "Deleting all transactions...",
+        success: "All transactions deleted successfully!",
+        error: "Failed to delete transactions",
+      }
+    );
+  };
 
-    if (result) {
-      setTransaction([])
-    }
-  }
 
   return (
     <div>
