@@ -8,24 +8,14 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
     icon: 'tabler-smart-home'
   },
   {
-    label: 'About',
-    href: '/about',
-    icon: 'tabler-info-circle'
+    label: 'Cart',
+    href: '/master/carts',
+    icon: 'tabler-shopping-cart'
   },
   {
-    label: 'Table Example',
-    href: '/master/table-example',
-    icon: 'tabler-info-circle'
-  },
-  {
-    label: 'Orders',
-    href: '/master/orders',
-    icon: 'tabler-receipt'
-  },
-  {
-    label: 'Phones',
-    href: '/master/phones',
-    icon: 'tabler-device-mobile' // Selected icon for mobile devices
+    label: 'History',
+    href: '/master/history',
+    icon: 'tabler-history'
   }
 ]
 
