@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.14.0",
     "@floating-ui/react": "0.27.2",
     "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.4.7",
     "@mui/lab": "6.0.0-beta.19",
     "@mui/material": "^6.2.1",
     "@mui/material-nextjs": "6.2.1",
@@ -40,6 +41,7 @@
     "react-toastify": "^11.0.3",
     "react-use": "17.6.0",
     "server-only": "0.0.1",
+    "use-debounce": "^10.0.4",
     "uuid": "^11.0.5",
     "yup": "^1.6.1"
   },

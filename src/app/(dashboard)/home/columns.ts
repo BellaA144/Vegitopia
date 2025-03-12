@@ -19,21 +19,23 @@ const columns = [
     enableSorting: true,
     sortingFn: caseInsensitiveSort
   }),
+  columnHelper.accessor('price', {
+    cell: info => info.getValue(),
+    header: 'Price',
+    enableSorting: true,
+    sortingFn: caseInsensitiveSort
+  }),
+  columnHelper.accessor('stock', {
+    cell: info => info.getValue(),
+    header: 'Stock',
+    enableSorting: true,
+    sortingFn: caseInsensitiveSort
+  }),
   columnHelper.accessor('type', {
     cell: info => info.getValue(),
     header: 'Type',
     enableSorting: true,
     sortingFn: caseInsensitiveSort
-  }),
-  columnHelper.accessor('created_at', {
-    cell: info => {
-      const value = info.getValue()
-
-      return value ? format(parseISO(value), 'yyyy-MM-dd HH:mm:ss') : '-'
-    },
-    header: 'Created At',
-    enableSorting: true,
-    sortingFn: 'datetime'
   })
 ]
 

@@ -1,22 +1,18 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
-import { getCart } from "./actions";
+import { fetchCarts } from "./actions";
 import Carts from "./components/Carts";
 
-export default async function CartPage() {
+export default async function CartsPage() {
   const supabase = await createClient();
-
   const { data, error } = await supabase.auth.getUser();
 
   if (error || !data?.user) {
     redirect("/login");
   }
 
-  const cart = await getCart();
+  const carts = await fetchCarts();
 
-  console.log("cart", cart);
-
-  return <Carts initialData={cart || []} />
-
+  return <Carts initialData={carts || []} />;
 }
